@@ -55,6 +55,11 @@ class ConsumerTest extends \PHPUnit_Framework_TestCase
             {
                 $this->consumerAction = $consumerAction;
             }
+
+            public function setRequeueAfterFailure($requeueAfterFailure)
+            {
+                $this->requeueAfterFailure = $requeueAfterFailure;
+            }
         };
     }
 
@@ -89,9 +94,11 @@ class ConsumerTest extends \PHPUnit_Framework_TestCase
     {
         $deliveryTag = 'tag';
         $body = 'body';
+        $requeue = true;
+        $this->consumer->setRequeueAfterFailure($requeue);
 
         $this->channel->basic_ack(Argument::any())->shouldNotBeCalled();
-        $this->channel->basic_reject($deliveryTag, true)->shouldBeCalled();
+        $this->channel->basic_reject($deliveryTag, $requeue)->shouldBeCalled();
 
         /**
          * @var AMQPMessage | ObjectProphecy $message

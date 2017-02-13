@@ -12,9 +12,15 @@ class Consumer extends AbstractWorker
      */
     protected $consumerAction;
 
-    public function consume(ConsumerActionInterface $consumerAction, string $queue)
+    /**
+     * @var bool
+     */
+    protected $requeueAfterFailure = false;
+
+    public function consume(ConsumerActionInterface $consumerAction, string $queue, bool $requeueAfterFailure = false)
     {
         $this->consumerAction = $consumerAction;
+        $this->requeueAfterFailure = $requeueAfterFailure;
         $channel = $this->getClient()->getChannel();
         $this->setPcntlAlarm(5);
 
@@ -43,7 +49,7 @@ class Consumer extends AbstractWorker
         if ($this->consumerAction->consumerActionExecute($message->getBody())) {
             $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
         } else {
-            $message->delivery_info['channel']->basic_reject($message->delivery_info['delivery_tag'], true);
+            $message->delivery_info['channel']->basic_reject($message->delivery_info['delivery_tag'], $this->requeueAfterFailure);
         }
     }
 }
