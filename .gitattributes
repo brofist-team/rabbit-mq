@@ -1,0 +1,6 @@
+/tests export-ignore
+.travis.yml export-ignore
+docker-compose.yml export-ignore
+Dockerfile export-ignore
+phpunit.sh export-ignore
+phpunit.xml export-ignore
