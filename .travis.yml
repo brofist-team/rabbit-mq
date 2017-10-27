@@ -3,7 +3,7 @@ sudo: required
 language: php
 
 php:
- - '7.0'
+ - '7.1'
 
 env:
   DOCKER_COMPOSE_VERSION: 1.9.0
@@ -20,7 +20,7 @@ before_install:
   - chmod +x ./phpunit.sh
 
 install:
-  - composer install
+#  - composer install
 
 before_cript:
   - mkdir -p build/coverage

@@ -1,14 +1,18 @@
-FROM richarvey/nginx-php-fpm:php7
-MAINTAINER Mihhac <finder_ausberlin@yahoo.de> version 0.1
+FROM php:7.1-fpm
+MAINTAINER Miha <finder_ausberlin@yahoo.de> version 0.2
 
-RUN cp /usr/bin/php7 /usr/bin/php
-RUN apk update
-RUN apk add php7-bcmath
-RUN apk add php7-xdebug
-RUN apk add php7-sockets
-RUN apk add php7-pcntl
-RUN echo "zend_extension=xdebug.so" >> /etc/php7/conf.d/xdebug.ini
+RUN apt-get update
+RUN docker-php-ext-install bcmath
+RUN docker-php-ext-install sockets
+RUN docker-php-ext-install pcntl
+RUN pecl install xdebug-2.5.5
+RUN echo "zend_extension=xdebug.so" >> /usr/local/etc/php/conf.d/xdebug.ini
+RUN apt-get install -y git
 
-ADD . /var/www/html
+RUN php -r "copy('https://getcomposer.org/download/1.3.1/composer.phar', '/usr/local/bin/composer');" && \
+    chmod +x /usr/local/bin/composer
 
-WORKDIR /var/www/html
+ADD . /var/www
+
+WORKDIR /var/www
+RUN composer install
